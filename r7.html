@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Countdown</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Averia+Gruesa+Libre&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: "Averia Gruesa Libre", system-ui;
+  background: black;
+}
+
+/* STARFIELD */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+/* PARALLAX */
+.parallax {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+}
+
+.layer1 { background: radial-gradient(circle, rgba(255,0,80,0.2), transparent); }
+.layer2 { background: radial-gradient(circle, rgba(0,150,255,0.2), transparent); }
+
+/* GLASS */
+.glass {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* NEON */
+.neon {
+  text-shadow: 0 0 10px #ff0040, 0 0 20px #ff0040, 0 0 40px #ff0040;
+}
+
+/* LIGHTNING FLASH */
+.flash {
+  animation: flash 0.2s;
+}
+@keyframes flash {
+  0% { background: white; }
+  100% { background: transparent; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="stars"></canvas>
+
+<div class="parallax layer1" id="layer1"></div>
+<div class="parallax layer2" id="layer2"></div>
+
+<div class="relative z-10 flex items-center justify-center min-h-screen text-white px-4">
+
+<div class="glass rounded-3xl p-8 text-center shadow-2xl max-w-3xl w-full">
+
+<h1 class="text-4xl neon mb-2">💍 The Beginning of Forever</h1>
+<p class="text-2xl mb-6 text-gray-300">Vimal ❤️  Shailvi</p>
+
+<div class="grid grid-cols-4 gap-4 text-center">
+<div><p id="days" class="text-3xl">00</p><small>Days</small></div>
+<div><p id="hours" class="text-3xl">00</p><small>Hours</small></div>
+<div><p id="minutes" class="text-3xl">00</p><small>Minutes</small></div>
+<div><p id="seconds" class="text-3xl text-red-400">00</p><small>Seconds</small></div>
+</div>
+<p class="mt-8 text-gray-400 text-sm">
+    • 3 April 2026 •
+  </p>
+<button onclick="toggleMusic()" class="mt-6 px-4 py-2 bg-white/10 rounded">🔊 Music</button>
+
+</div>
+</div>
+
+<!-- AUDIO -->
+<audio id="bgMusic" src="sound/bg.mp3" loop></audio>
+<audio id="alarm" src="sound/alarm.mp3"></audio>
+
+<script>
+const target = new Date("April 3, 2026 11:00:00").getTime();
+const bg = document.getElementById("bgMusic");
+const alarm = document.getElementById("alarm");
+
+let started = false;
+
+// MUSIC FADE IN
+function fadeIn(){
+  bg.volume = 0;
+  bg.play().catch(()=>{});
+  let v = 0;
+  let i = setInterval(()=>{
+    if(v<0.2){ v+=0.01; bg.volume=v; }
+    else clearInterval(i);
+  },200);
+}
+
+// MUSIC FADE OUT
+function fadeOut(){
+  let v = bg.volume;
+  let i = setInterval(()=>{
+    if(v>0){ v-=0.01; bg.volume=v; }
+    else { bg.pause(); clearInterval(i); }
+  },200);
+}
+
+document.addEventListener("click", ()=>{
+  if(!started){ fadeIn(); started=true; }
+});
+
+function toggleMusic(){
+  if(bg.paused) fadeIn(); else fadeOut();
+}
+
+// COUNTDOWN
+function update(){
+  let now = Date.now();
+  let diff = target - now;
+
+  if(diff<=0){
+    fadeOut();
+    document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:40vh;font-size:50px'>💥 IT'S TIME 💥</h1>";
+    setTimeout(()=>alarm.play(),500);
+    explode();
+    return;
+  }
+
+  if(diff<5000){
+    document.body.classList.add("flash");
+    speak(Math.ceil(diff/1000));
+  }
+
+  let d=Math.floor(diff/86400000);
+  let h=Math.floor(diff/3600000)%24;
+  let m=Math.floor(diff/60000)%60;
+  let s=Math.floor(diff/1000)%60;
+
+  days.innerText=d;
+  hours.innerText=h;
+  minutes.innerText=m;
+  seconds.innerText=s;
+}
+setInterval(update,1000);
+
+// VOICE (JARVIS STYLE)
+function speak(num){
+  let msg = new SpeechSynthesisUtterance(num.toString());
+  msg.rate = 0.8;
+  msg.pitch = 0.5;
+  speechSynthesis.speak(msg);
+}
+
+// STARFIELD
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = Array(200).fill().map(()=>({
+  x:Math.random()*canvas.width,
+  y:Math.random()*canvas.height,
+  z:Math.random()*2
+}));
+
+function drawStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{
+    ctx.fillStyle="white";
+    ctx.fillRect(s.x,s.y,s.z,s.z);
+    s.y+=s.z;
+    if(s.y>canvas.height) s.y=0;
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+// PARALLAX
+document.addEventListener("mousemove",(e)=>{
+  let x=(window.innerWidth/2-e.clientX)/30;
+  let y=(window.innerHeight/2-e.clientY)/30;
+  layer1.style.transform=`translate(${x}px,${y}px)`;
+  layer2.style.transform=`translate(${x*2}px,${y*2}px)`;
+});
+
+// EXPLOSION
+function explode(){
+  for(let i=0;i<100;i++){
+    let div=document.createElement("div");
+    div.style.position="fixed";
+    div.style.width="5px";
+    div.style.height="5px";
+    div.style.background="red";
+    div.style.top="50%";
+    div.style.left="50%";
+    document.body.appendChild(div);
+
+    let x=(Math.random()-0.5)*500;
+    let y=(Math.random()-0.5)*500;
+
+    div.animate([
+      {transform:"translate(0,0)"},
+      {transform:`translate(${x}px,${y}px)`}
+    ],{duration:1000});
+  }
+}
+</script>
+
+</body>
+</html>
