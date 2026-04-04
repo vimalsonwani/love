@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Decider</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h1 { margin-bottom: 1.5rem; font-size: 1.5rem; }
+
+        .inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus { border-color: var(--primary); }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            transition: transform 0.1s, background 0.3s;
+        }
+
+        button:active { transform: scale(0.98); }
+        button:hover { background-color: #4f46e5; }
+
+        #result {
+            margin-top: 2rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            min-height: 1.5em;
+            color: var(--primary);
+        }
+
+        .rolling {
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>The Decider</h1>
+    <div class="inputs">
+        <input type="text" id="option1" placeholder="Option 1 (e.g. Pizza)">
+        <input type="text" id="option2" placeholder="Option 2 (e.g. Tacos)">
+    </div>
+    
+    <button onclick="decide()">Decide for me!</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    function decide() {
+        const opt1 = document.getElementById('option1').value || "Option 1";
+        const opt2 = document.getElementById('option2').value || "Option 2";
+        const resultDisplay = document.getElementById('result');
+        
+        // Add a "rolling" effect
+        resultDisplay.classList.add('rolling');
+        resultDisplay.innerText = "Thinking...";
+
+        setTimeout(() => {
+            resultDisplay.classList.remove('rolling');
+            // Logic: Math.random() returns a number between 0 and 1
+            const choice = Math.random() < 0.5 ? opt1 : opt2;
+            resultDisplay.innerText = `✨ ${choice} ✨`;
+        }, 600);
+    }
+</script>
+
+</body>
+</html>
+
