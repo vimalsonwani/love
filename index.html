@@ -88,7 +88,7 @@ canvas {
 
 <div class="glass rounded-3xl p-8 text-center shadow-2xl max-w-3xl w-full">
 
-<h1 class="text-4xl neon mb-2">💍 The Beginning of Forever</h1>
+<h1 class="text-4xl neon mb-2">💖 Two souls becoming one</h1>
 <p class="text-2xl mb-6 text-gray-300">Vimal ❤️  Shailvi</p>
 
 <div class="grid grid-cols-4 gap-4 text-center">
@@ -98,7 +98,7 @@ canvas {
 <div><p id="seconds" class="text-3xl text-red-400">00</p><small>Seconds</small></div>
 </div>
 <p class="mt-8 text-gray-400 text-sm">
-    • 3 April 2026 •
+    • 19 November 2026 •
   </p>
 <button onclick="toggleMusic()" class="mt-6 px-4 py-2 bg-white/10 rounded">🔊 Music</button>
 
@@ -110,7 +110,7 @@ canvas {
 <audio id="alarm" src="sound/alarm.mp3"></audio>
 
 <script>
-const target = new Date("April 3, 2026 14:00:00").getTime();
+const target = new Date("November 19, 2026 23:00:00").getTime();
 const bg = document.getElementById("bgMusic");
 const alarm = document.getElementById("alarm");
 
@@ -151,7 +151,7 @@ function update(){
 
   if(diff<=0){
     fadeOut();
-    document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:40vh;font-size:50px'>Forever❤️Begins</h1>";
+    document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:40vh;font-size:50px'>They became one💖</h1>";
     setTimeout(()=>alarm.play(),500);
     explode();
     return;
